@@ -88,6 +88,7 @@ export default {
   data() {
     return {
       availableParts,
+      addedToCart: false,
       cart: [],
       selectedRobot: {
         head: {},
@@ -97,6 +98,17 @@ export default {
         base: {},
       },
     };
+  },
+  // Route guard. Contains 'route'.
+  beforeRouteLeave(to, from, next) {
+    if (this.addedToCart) {
+      next(true);
+    } else {
+      const response = confirm(
+        'You have not added your robot to your cart, are you sure you want to leave?',
+      );
+      next(response);
+    }
   },
   methods: {
     addToCart() {
@@ -109,6 +121,7 @@ export default {
         robot.base.cost;
 
       this.cart.push(Object.assign({}, robot, { cost }));
+      this.addedToCart = true;
     },
   },
   mixins: [createdHookMixin],
